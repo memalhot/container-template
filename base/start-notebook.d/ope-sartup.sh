@@ -2,7 +2,7 @@
 #set -x
 SN=ope-startup.sh
 [[ -z $MOUNT_DIR ]] && export MOUNT_DIR=/opt/app-root/src
-
+id
 # this script is designed to be run by the jupyter stack /usr/local/bin/start.sh
 echo "$0: $SN: BEGIN: $(id -a) : $HOME "
 

@@ -50,6 +50,9 @@ RUN mamba install --quiet --yes \
     ${PYTHON_PREREQ_VERSIONS} && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
+
+# Conda 4.13.0 has some strange dependency that pulling code from the recent head, causing the mamba clean fail
+RUN conda install conda=4.14.0 --yes
     
 # Install Python 3 packages
 # Install pip packages (things we could not get via mamba) as well
@@ -205,8 +208,6 @@ ENV USER=$NB_USER
 # to users which allows jovyan to write to it .. not ideal but a
 # fix
 RUN chgrp users /var/games/moria/scores.dat
-
+RUN chgrp root -R /home
 USER $NB_USER
-
-
 CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]
