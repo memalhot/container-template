@@ -5,6 +5,9 @@
 # see if there is a specified customization in the base settting
 CUST := $(shell if  [[ -a base/customization_name ]]; then cat base/customization_name;  fi)
 
+# I think bash is failing to intialze at line 1
+CUST := ope
+
 # User must specify customization suffix
 ifndef CUST
 $(error CUST is not set.  You must specify which customized version of the image you want to work with. Eg. make CUST=opf build)
@@ -149,7 +152,6 @@ build: ## Make the image customized appropriately
 	docker create --name tmp $(PRIVATE_REG)$(IMAGE)$(PRIVATE_TAG)
 	docker cp tmp:/home/jovyan/permissions_checksum.txt ./permissions_checksum.txt
 	docker rm tmp
-
 
 
 push: IMAGE = $(PRIVATE_IMAGE)
