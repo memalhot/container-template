@@ -145,7 +145,7 @@ build: DARGS ?= --build-arg FROM_REG=$(BASE_REG) \
                    --build-arg GDB_BUILD_SRC=$(GDB_BUILD_SRC) \
                    --build-arg UNMIN=$(UNMIN)
 build: ## Make the image customized appropriately
-	docker build $(DARGS) $(DCACHING) --no-cache --rm --force-rm -t $(PRIVATE_REG)$(IMAGE)$(PRIVATE_TAG) base
+	docker build $(DARGS) $(DCACHING) -t $(PRIVATE_REG)$(IMAGE)$(PRIVATE_TAG) base
 	-rm base/private_mamba_versions.$(VERSION)
 	make base/private_mamba_versions.$(VERSION)
 	-rm base/private_distro_versions.$(VERSION)
