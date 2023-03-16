@@ -42,11 +42,13 @@ USER ${NB_UID}
 # sometimes there are problems with the existing version of installed python packages
 # these need to be installed to the prerequisite versions before we can install the rest of the
 # packages. Install Python 3 packages
+
 RUN mamba install --quiet --yes ${PYTHON_PREREQ_VERSIONS}  && \
     mamba install --quiet --yes ${PYTHON_INSTALL_PACKAGES} && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
-    mamba clean -afy
+    mamba clean -afy && \
+    pip install nbclient==0.5.13
 
 # USER root
 
@@ -104,7 +106,7 @@ LABEL maintainer="Open Education <opeffort@gmail.com>"
 # ARG JUPYTER_ENABLE_EXTENSIONS
 # ARG JUPYTER_DISABLE_EXTENSIONS
 ARG UNMIN
-# ARG ADDITIONAL_DISTRO_PACKAGES
+ARG ADDITIONAL_DISTRO_PACKAGES
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
@@ -125,8 +127,8 @@ USER ${NB_UID}
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
-RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
-    fix-permissions "/home/${NB_USER}"
+# RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
+#     fix-permissions "/home/${NB_USER}"
 
 # copy overrides.json
 COPY settings ${CONDA_DIR}/share/jupyter/lab/settings
@@ -146,7 +148,7 @@ USER root
 #     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 # we want the container to feel more like a fully fledged system so we are pulling the trigger and unminimizing it
-RUN [[ $UNMIN == "yes" ]] &&  yes | unminimize || true
+# RUN [[ $UNMIN == "yes" ]] &&  yes | unminimize || true
 
 # Add ARM development environtment
 # COPY aarch64vm /home/aarch64vm

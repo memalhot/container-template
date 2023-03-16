@@ -23,12 +23,12 @@ OPE_GID := $(shell cat base/ope_gid)
 OPE_GROUP := $(shell cat base/ope_group)
 
 # we use this to choose between a build from the blessed known stable version or a test version
-VERSION := stable
+VERSION := test
 
 BASE_REG := $(shell cat base/base_registry)/
 BASE_IMAGE := $(shell cat base/base_image)
 BASE_STABLE_TAG := $(shell cat base/base_tag)
-BASE_TEST_TAG := :latest
+BASE_TEST_TAG := $(shell cat base/base_tag)
 
 DATE_TAG := $(shell date +"%m.%d.%y_%H.%M.%S")
 
@@ -51,7 +51,7 @@ PYTHON_PREREQ_VERSIONS_STABLE =  $(shell cat base/python_prereqs | base/mkversio
 PYTHON_INSTALL_PACKAGES_STABLE = $(shell cat base/python_pkgs | base/mkversions)
 PIP_INSTALL_PACKAGES_STABLE = $(shell cat base/pip_pkgs)
 
-PYTHON_PREREQ_VERSIONS_TEST := 
+PYTHON_PREREQ_VERSIONS_TEST := $(shell cat base/python_prereqs)
 PYTHON_INSTALL_PACKAGES_TEST := $(shell cat base/python_pkgs)
 PIP_INSTALL_PACKAGES_TEST := $(shell cat base/pip_pkgs)
 
