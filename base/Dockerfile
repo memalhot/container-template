@@ -13,7 +13,7 @@ LABEL maintainer="Open Education <opeffort@gmail.com>"
 # ARGS are consumed and reset after FROM
 # so any arguments you want to use below must be stated below FROM
 
-# ARG ADDITIONAL_DISTRO_PACKAGES
+ARG ADDITIONAL_DISTRO_PACKAGES
 ARG PYTHON_PREREQ_VERSIONS
 ARG PYTHON_INSTALL_PACKAGES
 # ARG GDB_BUILD_SRC
@@ -26,12 +26,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # change file permissions, etc.
 
 # install linux packages that we require for systems classes
-# USER root
+USER root
 
-# RUN dpkg --add-architecture i386 && \
-#     apt-get -y update --fix-missing && \
-#     apt-get -y install ${ADDITIONAL_DISTRO_PACKAGES} && \
-#     apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN dpkg --add-architecture i386 && \
+    apt-get -y update --fix-missing && \
+    apt-get -y install ${ADDITIONAL_DISTRO_PACKAGES} && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
     
 # Now that distro packages are installed lets install the python packages we want
 # This was inspired by
@@ -91,22 +91,20 @@ RUN mamba install --quiet --yes ${PYTHON_PREREQ_VERSIONS}  && \
 ## container.  This container contains everything required for authoring OPE courses
 ## Well is should anyway ;-)
 
-ARG FROM_REG
-ARG FROM_IMAGE
-ARG FROM_TAG
+# ARG FROM_REG
+# ARG FROM_IMAGE
+# ARG FROM_TAG
 
-FROM ${FROM_REG}${FROM_IMAGE}${FROM_TAG} AS stage-two
+# FROM ${FROM_REG}${FROM_IMAGE}${FROM_TAG} AS stage-two
 
-COPY --from=stage-one /opt/conda /opt/conda
-COPY --from=stage-one /usr/local/bin /usr/local/bin
-# COPY --from=stage-one /home/RISE /home/RISE
+# COPY --from=stage-one /opt/conda /opt/conda
 
-LABEL maintainer="Open Education <opeffort@gmail.com>"
+# LABEL maintainer="Open Education <opeffort@gmail.com>"
 
 # ARG JUPYTER_ENABLE_EXTENSIONS
 # ARG JUPYTER_DISABLE_EXTENSIONS
-ARG UNMIN
-ARG ADDITIONAL_DISTRO_PACKAGES
+# ARG UNMIN
+# ARG ADDITIONAL_DISTRO_PACKAGES
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
