@@ -45,12 +45,13 @@ USER ${NB_UID}
 
 RUN mamba install --quiet --yes ${PYTHON_PREREQ_VERSIONS}  && \
     mamba install --quiet --yes ${PYTHON_INSTALL_PACKAGES} && \
+    pip install nbclient==0.5.13 && \
+    pip install jupyterlab_rise && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
-    mamba clean -afy && \
-    pip install nbclient==0.5.13
+    mamba clean -afy
+    
 
-# USER root
 
 # # get and build gdb form source so that we have a current version >10 that support more advanced tui functionality
 # RUN if [[ -n "${GDB_BUILD_SRC}" ]] ; then \
@@ -108,7 +109,7 @@ RUN mamba install --quiet --yes ${PYTHON_PREREQ_VERSIONS}  && \
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER ${NB_UID}
 
@@ -131,19 +132,7 @@ ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 # copy overrides.json
 COPY settings ${CONDA_DIR}/share/jupyter/lab/settings
 
-# RUN cd /home/RISE && jupyter server extension enable rise && \
-#    jupyter serverextension enable rise && \
-#    jupyter labextension develop --overwrite . && \
-#    jupyter-nbextension install rise --py --sys-prefix --symlink && \
-#    jupyter-nbextension enable rise --py --sys-prefix && \
-#    rm -rf /tmp/yarn* /tmp/nodejs* /tmp/npm* /tmp/v8*
-
 USER root
-
-# RUN dpkg --add-architecture i386 && \
-#     apt-get -y update --fix-missing && \
-#     apt-get -y install ${ADDITIONAL_DISTRO_PACKAGES} && \
-#     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 # we want the container to feel more like a fully fledged system so we are pulling the trigger and unminimizing it
 # RUN [[ $UNMIN == "yes" ]] &&  yes | unminimize || true
