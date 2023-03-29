@@ -23,7 +23,7 @@ OPE_GID := $(shell cat base/ope_gid)
 OPE_GROUP := $(shell cat base/ope_group)
 
 # we use this to choose between a build from the blessed known stable version or a test version
-VERSION := test
+VERSION := stable
 
 BASE_REG := $(shell cat base/base_registry)/
 BASE_IMAGE := $(shell cat base/base_image)
@@ -47,8 +47,8 @@ PUBLIC_TEST_TAG := :test-$(CUST)
 BASE_DISTRO_PACKAGES := $(shell cat base/distro_pkgs)
 
 # use recursive assignment to defer execution until we have mamba versions made
-PYTHON_PREREQ_VERSIONS_STABLE =  $(shell cat base/python_prereqs | base/mkversions)
-PYTHON_INSTALL_PACKAGES_STABLE = $(shell cat base/python_pkgs | base/mkversions)
+PYTHON_PREREQ_VERSIONS_STABLE =  $(shell cat base/python_prereqs)
+PYTHON_INSTALL_PACKAGES_STABLE = $(shell cat base/python_pkgs)
 PIP_INSTALL_PACKAGES_STABLE = $(shell cat base/pip_pkgs)
 
 PYTHON_PREREQ_VERSIONS_TEST := $(shell cat base/python_prereqs)
@@ -128,7 +128,7 @@ base/private_image_info.$(VERSION):
 base/aarch64vm/README.md:
 	cd base && wget -O - ${ARCH64VMTGZ} | tar -zxf -
 
-build: base/aarch64vm/README.md
+# build: base/aarch64vm/README.md
 build: IMAGE = $(PRIVATE_IMAGE)
 build: DARGS ?= --build-arg FROM_REG=$(BASE_REG) \
                    --build-arg FROM_IMAGE=$(BASE_IMAGE) \
