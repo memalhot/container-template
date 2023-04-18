@@ -68,13 +68,7 @@ RUN touch /home/${NB_USER}/.hushlogin && \
 # finally remove default working directory from joyvan home
     rmdir /home/${NB_USER}/work && \
     # as per the nbstripout readme we setup nbstripout be always be used for the joyvan user for all repos
-    nbstripout --install --system && \
-    # # use built in startup script to setup new user home
-    /usr/local/bin/start.sh true; \
-    echo "hardcoding $NB_USER to uid=$NB_UID and group name $NB_GROUP with gid=$NB_GID shell to /bin/bash" ; \
-    usermod -s /bin/bash $NB_USER ; \
-    [[ -w /etc/passwd ]] && echo "Removing write access to /etc/passwd" && chmod go-w /etc/passwd
-
+    nbstripout --install --system 
 
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
@@ -103,15 +97,18 @@ ENV NB_GROUP=${NB_GROUP}
 #                 /usr/local/bin/before-notebook.d
 # and scripts in these directoreis are run automatically
 # an opportunity to set things up based on dynamic facts such as user name
+
+RUN /usr/local/bin/start.sh true; \
+    echo "hardcoding $NB_USER to uid=$NB_UID and group name $NB_GROUP with gid=$NB_GID shell to /bin/bash" ; \
+    usermod -s /bin/bash $NB_USER ; \
+    [[ -w /etc/passwd ]] && echo "Removing write access to /etc/passwd" && chmod go-w /etc/passwd
+
 COPY start-notebook.d /usr/local/bin/start-notebook.d
 
 ENV USER=$NB_USER
 
 # Change the ownership of the home directory to root group so it starts up properly
-RUN chgrp root -R /home
-
-# Checksum file dump for github actions
-RUN find / -path /proc -prune -o -type f 2>/dev/null -exec stat -c '%n %a' {} + | sha256sum > /home/jovyan/permissions_checksum.txt
+# RUN chgrp root -R /home
 
 USER $NB_USER
 CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]

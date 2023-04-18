@@ -1,16 +1,16 @@
 [
     {
-        "Id": "sha256:581c81862d6382ee0b729aa5ef5d3f6fdc6e084cc34d808e0dce993a0262e977",
+        "Id": "sha256:66de76f7a29a53d9329e0a9a33b6d8c313b008b989a713a37d166eb7dd6949b7",
         "RepoTags": [
-            "quay.io/rh_ee_keli/ucsls:stable-base-ope-NERC"
+            "quay.io/rh_ee_keli/ope-template:test-base-ope-NERC"
         ],
         "RepoDigests": [],
-        "Parent": "sha256:b3aad5221989e38edfc5c512c22e81024e15d83bd16ead08eb31ddbb2362bee6",
+        "Parent": "sha256:5ebd8dbc90c7de203dbfe66d9d159877291cf6cac96e4aeb22eb322c17618bfe",
         "Comment": "",
-        "Created": "2023-03-30T14:58:24.52814531Z",
-        "Container": "906498a279835c66728045f038fcd59db45da54356f7cc90125725fafb34e751",
+        "Created": "2023-04-14T20:36:27.33394461Z",
+        "Container": "6e19c03f149486437956cc0b5a5a53b332e6b02673a9dfb0e3e97d01a528a853",
         "ContainerConfig": {
-            "Hostname": "906498a27983",
+            "Hostname": "6e19c03f1494",
             "Domainname": "",
             "User": "jovyan",
             "AttachStdin": false,
@@ -60,7 +60,7 @@
                 "StartPeriod": 5000000000,
                 "Retries": 3
             },
-            "Image": "sha256:b3aad5221989e38edfc5c512c22e81024e15d83bd16ead08eb31ddbb2362bee6",
+            "Image": "sha256:5ebd8dbc90c7de203dbfe66d9d159877291cf6cac96e4aeb22eb322c17618bfe",
             "Volumes": null,
             "WorkingDir": "/home/jovyan",
             "Entrypoint": [
@@ -131,7 +131,7 @@
                 "StartPeriod": 5000000000,
                 "Retries": 3
             },
-            "Image": "sha256:b3aad5221989e38edfc5c512c22e81024e15d83bd16ead08eb31ddbb2362bee6",
+            "Image": "sha256:5ebd8dbc90c7de203dbfe66d9d159877291cf6cac96e4aeb22eb322c17618bfe",
             "Volumes": null,
             "WorkingDir": "/home/jovyan",
             "Entrypoint": [
@@ -154,12 +154,12 @@
         },
         "Architecture": "amd64",
         "Os": "linux",
-        "Size": 2959669343,
-        "VirtualSize": 2959669343,
+        "Size": 4847917348,
+        "VirtualSize": 4847917348,
         "GraphDriver": {
             "Data": {
-                "DeviceId": "2436",
-                "DeviceName": "docker-253:0-9965343-44e30da75e5fe6eedfa31a4dda7c8d11f500dc5eabd8ccdb74edff10bd65b058",
+                "DeviceId": "5248",
+                "DeviceName": "docker-253:0-9965343-4cb3d897e46fee0678958195a970adf9b3d40a5ef01bf3bd8bc0f86a8db1f3b4",
                 "DeviceSize": "10737418240"
             },
             "Name": "devicemapper"
@@ -189,17 +189,16 @@
                 "sha256:015840a00439333dd2ebb349cb58e8c5f0dc4eb0e364daf34b6e8717c97842a6",
                 "sha256:60d1bee5c1f1bca5bbb8830dc48907fe2a7a2f1a8816004a1cd37d4481a2152f",
                 "sha256:216664f30f4673290d7bb048b6ebfe212c207fc304834337a9c44dd6cdd79702",
-                "sha256:fd4873d5a7e77b903177fc20e1004f68985db279f2d8f332e89118138298ef28",
-                "sha256:ae76157a6324ab299697f60cc05b9409ee2e932b08c01691af3f9e3e3f19ad02",
-                "sha256:e702fc83f6ac68de2bb06dc7114b24dd70f3682a9e2ecbd4ee178e6c9c5ebbe8",
-                "sha256:dee4e26d8662183ad31c05d9c1bad3218e3d942023eb6ed598837c339b88ae3e",
-                "sha256:613bbe717946ec1b4130379616e5d6bf2a36927674377df3a8540d02bf8fc150",
-                "sha256:4bbb67b6c6f7129df53943a34c5076d7ecb5594b51814761e479b496f219a038",
-                "sha256:d39089b8c567f85c209969b07a9cfef5358f035ffb11e8400c97a221efa44176"
+                "sha256:1693b25d4509a204a5a2fddd41df590860b5f631d993662467a070a3e80ca4a7",
+                "sha256:9c011b62549466490641937a23e0edb5fc1c6d10e341477aef1338e0dbb51147",
+                "sha256:481f5e0dccfe443ce3db085fe62b473714bece9ba3a8cc18e6018811c23b975e",
+                "sha256:952695b6d2c7d19cbc97fb600c2c22ef08f7a0973ad3a6bcce3e3f2a9b969c0f",
+                "sha256:64d848bd283f2fe53c0816d40a9c7804bc8e4eb714154ca162720fbb0feabd14",
+                "sha256:db3936f7ecce38671414bea103a4a811b2a2476fd73cd18eab2d83b06dfc7edf"
             ]
         },
         "Metadata": {
-            "LastTagTime": "2023-03-30T14:58:28.541975758Z"
+            "LastTagTime": "2023-04-14T20:36:31.615285122Z"
         }
     }
 ]
