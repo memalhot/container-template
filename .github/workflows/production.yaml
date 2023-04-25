@@ -1,7 +1,7 @@
 name: Image Production
 on:
   push:
-    branches: ${{ github.ref }}
+    branches: [ ${{ github.ref }} ]
 jobs:
   build:
     runs-on: ubuntu-latest #use the latest ubuntu container image 
