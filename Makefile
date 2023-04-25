@@ -8,7 +8,7 @@ CUST := $(shell git branch --show-current)
 
 VERSION := latest
 
-OPE_BOOK := $(shell cat base/ope_book)
+OPE_BOOK := $(shell basename "$$(pwd)")
 OPE_UID := $(shell cat base/ope_uid)
 OPE_GID := $(shell cat base/ope_gid)
 OPE_GROUP := $(shell cat base/ope_group)
@@ -20,9 +20,9 @@ BASE_TAG := $(shell cat base/base_tag)
 DATE_TAG := $(shell date +"%m.%d.%y_%H.%M.%S")
 
 OPE_REGISTRY_USER := $(shell echo $(REGISTRY_USER))
-OPE_REGISTRY := $(shell cat base/ope_book_registry)/
+OPE_REGISTRY := $(shell echo $(REGISTRY))/
 OPE_IMAGE := $(REGISTRY_USER)/$(OPE_BOOK)
-OPE_TAG := $(CUST)
+OPE_TAG := :$(CUST)
 OPE_BETA_TAG := :beta-$(CUST)
 
 BASE_DISTRO_PACKAGES := $(shell cat base/distro_pkgs)

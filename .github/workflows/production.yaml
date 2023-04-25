@@ -8,6 +8,7 @@ on:
 env:
     REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
     REGISTRY_USER: ${{ vars.REGISTRY_USER }}
+    REGISTRY: ${{ vars.REGISTRY }}
 
 jobs:
   build:
@@ -26,7 +27,6 @@ jobs:
         
       - name: Push beta version
         run: |
-          REGISTRY=$(cat base/ope_book_registry)
           docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
           make push-beta
       
@@ -40,7 +40,6 @@ jobs:
 
       - name: Pull beta-version
         run: |
-          REGISTRY=$(cat base/ope_book_registry)
           make pull-beta
 
       - name: Show debug info
@@ -52,6 +51,7 @@ jobs:
       - name: Comparing checksum value
         run: |
           PERMISSIONS_CHECKSUM=$( make checksum )
+          echo $PERMISSIONS_CHECKSUM
           QUICK_TRIM=${PERMISSIONS_CHECKSUM::64}
           #CHECKSUM=$( cat base/checksum.txt )
           if [[ "$QUICK_TRIM == $CHECKSUM" ]]; then
@@ -77,6 +77,5 @@ jobs:
 
       - name: Push to public version
         run: |
-          REGISTRY=$(cat base/ope_book_registry)
           docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
           make publish
