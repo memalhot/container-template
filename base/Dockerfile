@@ -107,8 +107,8 @@ COPY start-notebook.d /usr/local/bin/start-notebook.d
 
 ENV USER=$NB_USER
 
-# Change the ownership of the home directory to root group so it starts up properly
-# RUN chgrp root -R /home
+# Change the ownership of the home directory to ope group so it starts up properly
+RUN chgrp ${OPE_GROUP} -R /home
 
 USER $NB_USER
 CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]

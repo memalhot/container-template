@@ -1,0 +1,75 @@
+name: Image Production
+on:
+  push:
+    branches: ${{ github.ref }}
+jobs:
+  build:
+    runs-on: ubuntu-latest #use the latest ubuntu container image 
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Build the image
+        run: |
+          make build
+        
+      - name: Push beta version
+        env:
+            REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          REGISTRY=$(cat base/ope_book_registry)
+          docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+          make push-beta
+      
+  
+  test:
+    runs-on: ubuntu-latest #use the latest ubuntu container image
+    needs: build
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Pull beta-version
+        run: |
+          REGISTRY=$(cat base/ope_book_registry)
+          make pull-beta
+
+      - name: Show debug info
+        run: |
+          IMAGE_TAG=$( make show-tag )
+          echo "For debugging purposes, here is the image tag:"
+          echo "  $IMAGE_TAG"
+
+      - name: Comparing checksum value
+        run: |
+          PERMISSIONS_CHECKSUM=$( make checksum )
+          QUICK_TRIM=${PERMISSIONS_CHECKSUM::64}
+          CHECKSUM=$( cat base/checksum.txt )
+          if [[ "$QUICK_TRIM == $CHECKSUM" ]]; then
+                echo "SUCCESS" 
+          else 
+                echo "FAILURE"
+                echo "Here is the image checksum:"
+                echo "  $QUICK_TRIM"
+                echo "Here is the correct checksum:"
+                echo "  $CHECKSUM"
+          fi
+
+      - name: Run course-specific tests
+        run: |
+          make -C tests test
+    
+  publish:
+    runs-on: ubuntu-latest #use the latest ubuntu container image
+    needs: test
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Push to public version
+        env:
+            REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          REGISTRY=$(cat base/ope_book_registry)
+          docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+          make publish

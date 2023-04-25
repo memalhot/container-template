@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSIONS=base/private_mamba_versions.stable
+VERSIONS=base/mamba_versions
 
 echo $(while read pkg; do
    info=$(grep "^${pkg}" $VERSIONS)
