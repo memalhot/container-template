@@ -100,8 +100,8 @@ publish:
 	docker tag $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)_$(DATE_TAG)
 	docker tag $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)
 # push to private image repo
-	docker push $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)_$(DATE_TAG)
-	docker push $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)
+	docker push $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)_$(DATE_TAG)
+	docker push $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG)
 
 
 checksum: ARGS ?= find / -not \( -path /proc -prune \) -not \( -path /sys -prune \) -type f -exec stat -c '%n %a' {} + | LC_ALL=C sort | sha256sum
