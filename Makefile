@@ -154,7 +154,13 @@ run-beta: ARGS ?=
 run-beta: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
 run-beta: PORT ?= 8888
 run-beta: ## start published version with jupyter lab interface
-	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(REG)$(IMAGE)$(TAG) $(ARGS)
+	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG) $(ARGS)
+
+show-run-beta: ARGS ?=
+show-run-beta: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
+show-run-beta: PORT ?= 8888
+show-run-beta: ## start published version with jupyter lab interface
+	@-echo "docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG) $(ARGS)""
 
 show-tag: ## show current tag
 	@-echo $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG)
