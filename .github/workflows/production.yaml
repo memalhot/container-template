@@ -11,9 +11,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Check Vars
+        env:
+            REGISTRY_USER: ${{ env.REGISTRY_USER }}
         run: |
           echo $REGISTRY_USER
-          
+
       - name: Build the image
         run: |
           make build
