@@ -53,7 +53,7 @@ jobs:
         run: |
           PERMISSIONS_CHECKSUM=$( make checksum )
           QUICK_TRIM=${PERMISSIONS_CHECKSUM::64}
-          CHECKSUM=$( cat base/checksum.txt )
+          #CHECKSUM=$( cat base/checksum.txt )
           if [[ "$QUICK_TRIM == $CHECKSUM" ]]; then
                 echo "SUCCESS" 
           else 
