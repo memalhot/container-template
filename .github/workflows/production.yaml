@@ -10,6 +10,10 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
+      - name: Check Vars
+        run: |
+          echo $REGISTRY_USER
+          
       - name: Build the image
         run: |
           make build
