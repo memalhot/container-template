@@ -49,10 +49,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
-          
-      - name: Installing necessary python packages
-        run: pip install selenium webdriver_manager
 
+      - name: Installing necessary python packages
+        run: pip install selenium webdriver_manager jupyterlab
+      
+      - name: Run JupyterLab in background
+        run: |
+          jupyter lab --no-browser &
+          sleep 3
+          
       # - name: Pull beta-version
       #   run: |
       #     make pull-beta
@@ -81,7 +86,8 @@ jobs:
 
       - name: Run Selenium tests
         run: |
-          make -C tests test
+          url=$(jupyter lab list 2>&1 | grep -o 'http://[^[:space:]]*')
+          echo $url
   
   # approval:
   #   needs: test

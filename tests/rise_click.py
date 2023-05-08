@@ -3,13 +3,38 @@ from selenium.webdriver.chrome.service import Service as ChromiumService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import platform
+import sys
 
+if len(sys.argv) <= 1:
+    print("Invalid number of arguments")
+    exit(1)
+
+url = sys.argv[1]
 chrome_options = Options()
-chrome_options.add_argument('--headless')
 
-driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
+if platform.system() == 'Windows' or platform.system() == 'Darwin':
+    chrome_options.add_experimental_option('detach', True)
+    driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager().install()), options=chrome_options)
+elif platform.system() == 'Linux':
+    chrome_options.add_argument('--headless') # Inorder for Action to run, it needs to be headless
+    driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
+else:
+    print("Unknown OS")
+    exit(1)
 
-driver.get("https://www.google.com/")
+driver.get(url)
 print(driver.title)
 
+driver.implicitly_wait(10)
+
+new_nb_button = driver.find_element(By.XPATH, '//div[@data-category="Notebook"]')
+new_nb_button.click()
+
+rise_button = driver.find_element(By.XPATH, '//button[@data-command="RISE:preview"]')
+rise_button.click()
+
 driver.quit()
+
+
