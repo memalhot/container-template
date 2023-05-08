@@ -87,6 +87,7 @@ jobs:
       - name: Run Selenium tests
         run: |
           container_id=$(docker ps -q | head -n 1)
+          echo $container_id
           url=$(docker exec $container_id jupyter lab list 2>&1 | grep -o 'http://[^[:space:]]*')
           echo $url
   
