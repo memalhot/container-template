@@ -1,4 +1,4 @@
-name: Image Production
+name: Selenium Test
 
 on:
   push:
@@ -80,28 +80,28 @@ jobs:
       #           echo "  $CHECKSUM"
       #     fi
 
-      - name: Run course-specific tests
+      - name: Run Selenium tests
         run: |
           make -C tests test
   
-  approval:
-    needs: test
-    environment:
-      name: approval
-    runs-on: ubuntu-latest
-    steps:
-    - name: manual approve
-      run: |
-          echo "Publication approved"
+  # approval:
+  #   needs: test
+  #   environment:
+  #     name: approval
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: manual approve
+  #     run: |
+  #         echo "Publication approved"
 
-  publish:
-    runs-on: ubuntu-latest #use the latest ubuntu container image
-    needs: approval
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
+  # publish:
+  #   runs-on: ubuntu-latest #use the latest ubuntu container image
+  #   needs: approval
+  #   steps:
+  #     - name: Checkout the code
+  #       uses: actions/checkout@v3
 
-      - name: Push to public version
-        run: |
-          docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
-          make publish
+  #     - name: Push to public version
+  #       run: |
+  #         docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  #         make publish
