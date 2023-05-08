@@ -1,9 +1,9 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from selenium.webdriver.chromium.service import ChromiumService
 
-driver_path = ChromeDriverManager().install()
-driver = webdriver.Chrome(driver_path)
+
+driver = webdriver.Chrome(service=ChromiumService(executable_path=ChromeDriverManager().install()))
 driver.get("https://www.google.com/")
 print(driver.title)
 
