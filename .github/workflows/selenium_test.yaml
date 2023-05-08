@@ -59,7 +59,7 @@ jobs:
 
       - name: Run JupyterLab inside container
         run: |
-          make run &
+          make run-beta &
           sleep 3
 
       # - name: Show debug info
