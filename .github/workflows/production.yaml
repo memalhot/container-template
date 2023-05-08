@@ -11,58 +11,74 @@ env:
     REGISTRY: ${{ vars.REGISTRY }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest #use the latest ubuntu container image 
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
+  # build:
+  #   runs-on: ubuntu-latest #use the latest ubuntu container image 
+  #   steps:
+  #     - name: Checkout the code
+  #       uses: actions/checkout@v3
 
-      - name: Check Vars
-        run: |
-          echo $REGISTRY_USER
+  #     - name: Check Vars
+  #       run: |
+  #         echo $REGISTRY_USER
 
-      - name: Build the image
-        run: |
-          make build
+  #     - name: Build the image
+  #       run: |
+  #         make build
         
-      - name: Push beta version
-        run: |
-          docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
-          make push-beta
+  #     - name: Push beta version
+  #       run: |
+  #         docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  #         make push-beta
       
   
   test:
     runs-on: ubuntu-latest #use the latest ubuntu container image
-    needs: build
+    # needs: build
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
+      
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-      - name: Pull beta-version
-        run: |
-          make pull-beta
+      - name: Installing package list
+        run: apt list --installed    
+      - name: Removing previous chrome instances on runner 
+        run: sudo apt purge google-chrome-stable  
+        
+       # Need to fetch reqs if needed
+      - name: Installing all necessary packages
+        run: pip install chromedriver-autoinstaller selenium pyvirtualdisplay
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
 
-      - name: Show debug info
-        run: |
-          IMAGE_TAG=$( make show-tag )
-          echo "For debugging purposes, here is the image tag:"
-          echo "  $IMAGE_TAG"
+      # - name: Pull beta-version
+      #   run: |
+      #     make pull-beta
 
-      - name: Comparing checksum value
-        run: |
-          PERMISSIONS_CHECKSUM=$( make checksum )
-          echo $PERMISSIONS_CHECKSUM
-          QUICK_TRIM=${PERMISSIONS_CHECKSUM::64}
-          #CHECKSUM=$( cat base/checksum.txt )
-          if [[ "$QUICK_TRIM == $CHECKSUM" ]]; then
-                echo "SUCCESS" 
-          else 
-                echo "FAILURE"
-                echo "Here is the image checksum:"
-                echo "  $QUICK_TRIM"
-                echo "Here is the correct checksum:"
-                echo "  $CHECKSUM"
-          fi
+      # - name: Show debug info
+      #   run: |
+      #     IMAGE_TAG=$( make show-tag )
+      #     echo "For debugging purposes, here is the image tag:"
+      #     echo "  $IMAGE_TAG"
+
+      # - name: Comparing checksum value
+      #   run: |
+      #     PERMISSIONS_CHECKSUM=$( make checksum )
+      #     echo $PERMISSIONS_CHECKSUM
+      #     QUICK_TRIM=${PERMISSIONS_CHECKSUM::64}
+      #     #CHECKSUM=$( cat base/checksum.txt )
+      #     if [[ "$QUICK_TRIM == $CHECKSUM" ]]; then
+      #           echo "SUCCESS" 
+      #     else 
+      #           echo "FAILURE"
+      #           echo "Here is the image checksum:"
+      #           echo "  $QUICK_TRIM"
+      #           echo "Here is the correct checksum:"
+      #           echo "  $CHECKSUM"
+      #     fi
 
       - name: Run course-specific tests
         run: |
