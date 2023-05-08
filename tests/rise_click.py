@@ -1,29 +1,8 @@
 from selenium import webdriver
-import chromedriver_autoinstaller
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.utils import ChromeType
 
-chromedriver_autoinstaller.install()
-
-chrome_options = webdriver.ChromeOptions()    
-# Add your options as needed    
-options = [
-  # Define window size here
-   "--window-size=1200,1200",
-    "--ignore-certificate-errors"
- 
-    #"--headless",
-    #"--disable-gpu",
-    #"--window-size=1920,1200",
-    #"--ignore-certificate-errors",
-    #"--disable-extensions",
-    #"--no-sandbox",
-    #"--disable-dev-shm-usage",
-    #'--remote-debugging-port=9222'
-]
-
-for option in options:
-    chrome_options.add_argument(option)
-
-    
-driver = webdriver.Chrome(options = chrome_options)
-driver.get('http://github.com')
+driver_path = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+driver = webdriver.Chrome(driver_path)
+driver.get("https://www.google.com/")
 print(driver.title)
