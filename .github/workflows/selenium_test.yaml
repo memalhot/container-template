@@ -52,15 +52,15 @@ jobs:
 
       - name: Installing necessary python packages
         run: pip install selenium webdriver_manager jupyterlab
-      
-      - name: Run JupyterLab in background
-        run: |
-          jupyter lab --no-browser &
-          sleep 3
           
-      # - name: Pull beta-version
-      #   run: |
-      #     make pull-beta
+      - name: Pull beta-version
+        run: |
+          make pull-beta
+
+      - name: Run JupyterLab inside container
+        run: |
+          make run &
+          sleep 3
 
       # - name: Show debug info
       #   run: |
@@ -86,7 +86,8 @@ jobs:
 
       - name: Run Selenium tests
         run: |
-          url=$(jupyter lab list 2>&1 | grep -o 'http://[^[:space:]]*')
+          container_id=$(docker ps -q | head -n 1)
+          url=$(docker exec $container_id jupyter lab list 2>&1 | grep -o 'http://[^[:space:]]*')
           echo $url
   
   # approval:
