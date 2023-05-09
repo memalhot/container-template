@@ -150,7 +150,7 @@ run-beta: ARGS ?=
 run-beta: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
 run-beta: PORT ?= 8888
 run-beta: ## start published version with jupyter lab interface
-	docker run --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_TAG) $(ARGS)
+	docker run --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_REGISTRY)$(OPE_IMAGE)$(OPE_BETA_TAG) $(ARGS)
 
 show-run-beta: ARGS ?=
 show-run-beta: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22

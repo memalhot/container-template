@@ -89,7 +89,7 @@ jobs:
           container_id=$(docker ps -q | head -n 1)
           echo $container_id
           url=$(docker exec $container_id jupyter lab list 2>&1 | grep -o 'http://[^[:space:]]*')
-          python3 rise_click.py $url
+          python3 tests/rise_click.py $url
   
   # approval:
   #   needs: test
