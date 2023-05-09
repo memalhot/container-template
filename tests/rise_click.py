@@ -36,5 +36,7 @@ new_nb_button.click()
 rise_button = driver.find_element(By.XPATH, '//button[@data-command="RISE:preview"]')
 rise_button.click()
 
+print("Rise Extension is working!")
+
 
 
