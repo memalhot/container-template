@@ -11,7 +11,8 @@ if len(sys.argv) <= 1:
     print("Invalid number of arguments")
     exit(1)
 
-url = sys.argv[1]
+token = sys.argv[1]
+url = "http://127.0.0.1:8888/lab?token=" + token
 chrome_options = Options()
 
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
@@ -25,16 +26,15 @@ else:
     exit(1)
 
 driver.get(url)
-print(driver.title)
 
 driver.implicitly_wait(10)
 
 new_nb_button = driver.find_element(By.XPATH, '//div[@data-category="Notebook"]')
 new_nb_button.click()
 
+
 rise_button = driver.find_element(By.XPATH, '//button[@data-command="RISE:preview"]')
 rise_button.click()
 
-driver.quit()
 
 
