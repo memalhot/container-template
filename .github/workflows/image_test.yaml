@@ -67,7 +67,6 @@ jobs:
       - name: Run RISE extension tests
         run: |
           container_id=$(docker ps -q | head -n 1)
-          echo $container_id
           token=$(docker exec $container_id jupyter lab list 2>&1 | grep -o "token=[^ ]*" | cut -d= -f2)
           python3 tests/rise_click.py $token
   
