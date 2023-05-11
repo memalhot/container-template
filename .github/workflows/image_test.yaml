@@ -70,10 +70,12 @@ jobs:
           token=$(docker exec $container_id jupyter lab list 2>&1 | grep -o "token=[^ ]*" | cut -d= -f2)
           python3 tests/rise_click.py $token
   
-  Permission-Test:
+  Image-Test:
     runs-on: ubuntu-latest #use the latest ubuntu container image
     needs: build
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
       - name: Checkout the code
         uses: actions/checkout@v3
       
