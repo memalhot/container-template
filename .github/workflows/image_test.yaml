@@ -9,7 +9,7 @@ env:
     REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
 
 jobs:
-    build:
+  build:
     runs-on: ubuntu-latest #use the latest ubuntu container image 
     steps:
       - name: Checkout the code
