@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import platform
 import sys
+import time
 
 if len(sys.argv) <= 1:
     print("Invalid number of arguments")
@@ -28,16 +29,9 @@ else:
 
 driver.get(url)
 
-driver.implicitly_wait(10)
+time.sleep(10)
 
-new_nb_button = driver.find_element(By.XPATH, '//div[@data-category="Notebook"]')
-new_nb_button.click()
-
-
-rise_button = driver.find_element(By.XPATH, '//button[@data-command="RISE:preview"]')
-rise_button.click()
-
-print("Rise Extension is working!")
+driver.save_screenshot('screenshot.png')
 
 
 

@@ -1,2 +1,4 @@
-test:
-	python3 rise_click.py
+clean:
+	rm -rf *.png
+	rm -rf *.ipynb
+	rm -rf .ipynb_checkpoints

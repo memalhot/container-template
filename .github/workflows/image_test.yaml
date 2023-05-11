@@ -1,34 +1,30 @@
-name: Selenium Test
+name: Image Test
 
 on:
   push:
     branches: 
-      - 'image*'
+      - 'container*'
 
 env:
     REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-    REGISTRY_USER: ${{ vars.REGISTRY_USER }}
-    REGISTRY: ${{ vars.REGISTRY }}
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest #use the latest ubuntu container image 
-  #   steps:
-  #     - name: Checkout the code
-  #       uses: actions/checkout@v3
+    build:
+    runs-on: ubuntu-latest #use the latest ubuntu container image 
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
 
-  #     - name: Check Vars
-  #       run: |
-  #         echo $REGISTRY_USER
-
-  #     - name: Build the image
-  #       run: |
-  #         make build
+      - name: Build the image
+        run: |
+          make build
         
-  #     - name: Push beta version
-  #       run: |
-  #         docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
-  #         make push-beta
+      - name: Push beta version
+        run: |
+          REGISTRY=$(cat base/ope_book_registry)
+          REGISTRY_USER=$(cat base/ope_book_user)
+          docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+          make push
       
   
   test:
