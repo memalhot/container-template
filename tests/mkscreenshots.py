@@ -31,7 +31,7 @@ driver.get(url)
 
 time.sleep(10)
 
-driver.save_screenshot('screenshot.png')
+driver.save_screenshot('main_screenshot.png')
 
 
 

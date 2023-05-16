@@ -1,3 +1,5 @@
+# ----- Test Targets -----
+
 rise-test:
 	@container_id := $(shell docker ps -q | head -n 1 )
 	@token := $(shell docker exec ${container_id} jupyter lab list 2>&1 | grep -o "token=[^ ]*" | cut -d= -f2)
@@ -16,6 +18,11 @@ checksum-test:
 		echo "Here is the correct checksum:" \
 		echo "  ${CORRECT_CHECKSUM}" \
 	fi
+
+# ----- Development Targets -----
+screenshots: # make 
+	@echo "NYI"
+	
 
 clean:
 	rm -rf *.png

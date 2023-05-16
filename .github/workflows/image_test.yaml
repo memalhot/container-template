@@ -64,7 +64,7 @@ jobs:
 
       - name: Run RISE extension tests
         run: |
-          make rise-test
+          make -C tests rise-test
           # container_id=$(docker ps -q | head -n 1)
           # token=$(docker exec $container_id jupyter lab list 2>&1 | grep -o "token=[^ ]*" | cut -d= -f2)
           # python3 tests/rise_click.py $token
@@ -82,7 +82,7 @@ jobs:
 
       - name: Comparing checksum value
         run: |
-          make checksum-test
+          make  -C tests checksum-test
 
   Approval:
     needs: [UI-Test, Image-Test]
