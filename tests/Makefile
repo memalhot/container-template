@@ -6,7 +6,7 @@ rise-test:
 
 
 checksum-test: CHECKSUM ?= $(shell make -C .. checksum )
-checksum-test: CORRECT_CHECKSUM ?= $(shell cat ../base/checksum.txt )
+checksum-test: CORRECT_CHECKSUM ?= $(shell cat ../base/checksum )
 checksum-test:
 	@if [[ "$(CHECKSUM) == $(CORRECT_CHECKSUM)" ]]; then \
 		echo "SUCCESS" \
