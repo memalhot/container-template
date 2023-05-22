@@ -68,7 +68,7 @@ jobs:
       
       - name: Run Screenshots difference tests
         run: |
-          make -C tests screenshot-test
+          make -C tests screenshots-test
   
   Image-Test:
     runs-on: ubuntu-latest #use the latest ubuntu container image

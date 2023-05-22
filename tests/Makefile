@@ -8,15 +8,14 @@ rise-test:
 checksum-test: CHECKSUM ?= $(shell make -C .. checksum )
 checksum-test: CORRECT_CHECKSUM ?= $(shell cat ../base/checksum )
 checksum-test:
-	@if [[ "$(CHECKSUM) == $(CORRECT_CHECKSUM)" ]]; then \
-		echo "SUCCESS" \
-	else \
-		echo "FAILURE" \
-		echo "Here is the image checksum:" \
-		echo "  $(CHECKSUM)" \
-		echo "Here is the correct checksum:" \
-		echo "  $(CORRECT_CHECKSUM)" \
-	fi
+ifeq ($(CHECKSUM),$(CORRECT_CHECKSUM))
+	@echo "Checksum Test Passed"
+else
+	@echo "Checksum Test Failed"
+	@echo "Expected: $(CORRECT_CHECKSUM)"
+	@echo "Got: $(CHECKSUM)"
+	exit 1
+endif
 
 screenshots-test: screenshots
 screenshots-test:
