@@ -2,7 +2,7 @@
 #set -x
 SN=ope-startup.sh
 [[ -z $MOUNT_DIR ]] && export MOUNT_DIR=/opt/app-root/src
-
+id
 # this script is designed to be run by the jupyter stack /usr/local/bin/start.sh
 echo "$0: $SN: BEGIN: $(id -a) : $HOME "
 
@@ -43,8 +43,9 @@ if [[ -d $MOUNT_DIR ]]; then
 	      ln -s $MOUNT_DIR/$DIR $HOME/$DIR	    
 	      if [[ $DIR = .ssh ]]; then
 		  # As per the standard jupyter startup scripts we use the following test to
-		  # figure out if we have been started in a jupyterhub env
-		  if [[ -n "${JUPYTERHUB_API_TOKEN}" ]]; then
+		  # figure out if we have been started in a jupyterhub env or if we have started
+		  # on openshift 
+		  if [[ -n "${JUPYTERHUB_API_TOKEN}" || ${JUPYTER_IMAGE} =~ openshift ]]; then
 		      # during jupyter stacks startup logic "fixes permissions" on home directories
 		      # this causes group permissions to be set.  We undo this with a hammer on .ssh
  		      echo "$SN: Fixing permissions in  $HOME/$DIR"
