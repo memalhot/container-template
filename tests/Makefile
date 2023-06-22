@@ -4,7 +4,6 @@ rise-test: TOKEN ?= $(shell docker exec $(CONT_ID) jupyter lab list 2>&1 | grep 
 rise-test:
 	python3 rise_test.py $(TOKEN)
 
-
 checksum-test: CHECKSUM ?= $(shell make -C .. checksum )
 checksum-test: CORRECT_CHECKSUM ?= $(shell cat ../base/checksum )
 checksum-test:
@@ -31,9 +30,9 @@ base_screenshots: screenshots
 base_screenshots:
 	mv *.png base_screenshots
 
-
 clean:
 	rm -rf *.png
 	rm -rf *.ipynb
 	rm -rf .ipynb_checkpoints
+
 
