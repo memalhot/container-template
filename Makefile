@@ -1,13 +1,10 @@
 # this was seeded from https://github.com/umsi-mads/education-notebook/blob/master/Makefile
-.PHONEY: help build ope root push publish lab nb python-versions distro-versions image-sha clean
+.PHONY: help build ope root push publish lab nb python-versions distro-versions image-sha clean
 .IGNORE: ope root
 
 # see if there is a specified customization in the base settting
 SHELL := /bin/bash
 CUST := $(shell if  [[ -a base/customization_name ]]; then cat base/customization_name;  fi)
-
-# I think bash is failing to intialze at line 1
-CUST := ope
 
 # User must specify customization suffix
 ifndef CUST
