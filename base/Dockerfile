@@ -43,10 +43,9 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN conda install --quiet --yes conda=23.3.1 python=3.9.16 --no-pin && \ 
+RUN conda install --quiet --yes conda=23.3.1 python=3.9.16 --no-pin --force-reinstall && \ 
     conda install --quiet --yes ${PYTHON_PREREQ_VERSIONS} && \
     conda install --quiet --yes ${PYTHON_INSTALL_PACKAGES} && \
-    #mamba install --quiet --yes jupyter_contrib_nbextensions=0.7.0 && \
     pip install nbclient==0.5.13 && \
     pip install jupyterlab_rise && \
     fix-permissions "${CONDA_DIR}" && \
