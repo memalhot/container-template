@@ -75,29 +75,27 @@ RUN touch /home/${NB_USER}/.hushlogin && \
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
 # FIXME: Add support for swinging home directory if you want to point to a mounted volume
-ARG DEFAULT_NB_UID=${NB_UID}
-ARG OPE_UID
-ARG OPE_GID
-ARG OPE_GROUP
+ARG CUSTOMIZE_UID
+ENV NB_UID=${CUSTOMIZE_UID}
+
+ARG CUSTOMIZE_GID
+ENV NB_GID=${CUSTOMIZE_GID}
+
+ARG CUSTOMIZE_GROUP
+ENV NB_GROUP=${CUSTOMIZE_GROUP}
+
+ARG EXTRA_CHOWN
 ARG CHOWN_HOME=yes
 ARG CHOWN_HOME_OPTS="-R"
 ARG CHOWN_EXTRA_OPTS='-R'
-ARG CHOWN_EXTRA="${CONDA_DIR}"
-ENV OPE_UID=${OPE_UID}
-ENV NB_UID=${OPE_UID}
-ENV OPE_GID=${OPE_GID}
-ARG NB_GID=${OPE_GID}
-ENV NB_GID=${NB_GID}
-ENV OPE_GROUP=${OPE_GROUP}
-ARG NB_GROUP=${OPE_GROUP}
-ENV NB_GROUP=${NB_GROUP}
+ARG CHOWN_EXTRA="${EXTRA_CHOWN} ${CONDA_DIR}"
 
 # Done customization
 
 # jupyter-stack contains logic to run custom start hook scripts from
 # two locations -- /usr/local/bin/start-notebook.d and
 #                 /usr/local/bin/before-notebook.d
-# and scripts in these directoreis are run automatically
+# and scripts in these directories are run automatically
 # an opportunity to set things up based on dynamic facts such as user name
 
 RUN /usr/local/bin/start.sh true; \

@@ -11,6 +11,7 @@ ifndef CUST
 $(error CUST is not set.  You must specify which customized version of the image you want to work with. Eg. make CUST=opf build)
 endif
 
+OPE_CONTAINER_NAME := $(shell cat base/ope_container_name)
 
 OPE_BOOK := $(shell cat base/ope_book)
 # USER id
@@ -40,16 +41,30 @@ PIP_INSTALL_PACKAGES := $(shell cat base/pip_pkgs)
 JUPYTER_ENABLE_EXTENSIONS := $(shell cat base/jupyter_enable_exts)
 JUPYTER_DISABLE_EXTENSIONS := $(shell if  [[ -a base/jupyter_disable_exts  ]]; then cat base/jupyter_disable_exts; fi) 
 
-# expand installation so that the image feels more like a proper UNIX user environment with man pages, etc.
-UNMIN := yes
+
+# Set customization 
+
+CUSTOMIZE_FROM := $(shell if  [[ -a base/customize_from ]]; then cat base/customize_from; else echo ${OPE_BOOK_REG}${OPE_BOOK_IMAGE}; fi)
+
+# <reg>/<ope_project>:<ope_container>-<stable|test>-<customization>-<latest|date>
+# quay.io/ucsls:stable-ucsls-burosa2023prod-latest
+
+CUSTOMIZE_NAME := $(CUSTOMIZE_FROM)-test-$(shell cat base/customize_name) 
+
+CUSTOMIZE_UID := $(shell cat base/customize_uid)
+CUSTOMIZE_GID := $(shell cat base/customize_gid)
+CUSTOMIZE_GROUP := $(shell cat base/customize_group)
 
 # Common docker run configuration designed to mirror as closely as possible the openshift experience
-# if port mapping for SSH access
+# of port mapping for SSH access
 SSH_PORT := 2222
 
 # we mount here to match openshift
-MOUNT_DIR := /opt/app-root/src
+MOUNT_DIR := $(shell cat base/mount_dir)
 HOST_DIR := ${HOME}
+
+# extra directories to fix permissions on
+EXTRA_CHOWN := $(shell if  [[ -a base/extra_chown  ]]; then cat base/extra_chown; fi) 
 
 help:
 # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -65,9 +80,18 @@ build: DARGS ?= --build-arg FROM_REG=$(BASE_REG) \
                    --build-arg ADDITIONAL_DISTRO_PACKAGES="$(BASE_DISTRO_PACKAGES)" \
                    --build-arg PYTHON_PREREQ_VERSIONS="$(PYTHON_PREREQ_VERSIONS)" \
                    --build-arg PYTHON_INSTALL_PACKAGES="$(PYTHON_INSTALL_PACKAGES)" \
-                   --build-arg PIP_INSTALL_PACKAGES="$(PIP_INSTALL_PACKAGES)"
+                   --build-arg PIP_INSTALL_PACKAGES="$(PIP_INSTALL_PACKAGES)" \
+				   --build-arg EXTRA_CHOWN="$(EXTRA_CHOWN)"
 build: ## Make the image customized appropriately
-	docker build $(DARGS) $(DCACHING) -t $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG) base
+	docker build $(DARGS) $(DCACHING) -t $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG) --file base/Build.Dockerfile base
+
+customize: DARGS ?= --build-arg FROM_IMAGE=$(CUSTOMIZE_FROM) \
+                   --build-arg CUSTOMIZE_UID=$(CUSTOMIZE_UID) \
+                   --build-arg CUSTOMIZE_GID=$(CUSTOMIZE_GID) \
+                   --build-arg CUSTOMIZE_GROUP=$(CUSTOMIZE_GROUP) \
+		           --build-arg EXTRA_CHOWN="$(EXTRA_CHOWN)"
+customize:  ## build a customized deployment image
+	docker build $(DARGS) $(DCACHING) --rm --force-rm -t $(CUSTOMIZE_NAME) --file base/Customize.Dockerfile base
 
 push: DARGS ?=
 push: ## push private build
@@ -139,4 +163,8 @@ run: PORT ?= 8888
 run: ## start published version with jupyter lab interface
 	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_PUBLIC_TAG) $(ARGS) 
 
-
+run-cust: ARGS ?=
+run-cust: DARGS ?= -u $(CUSTOMIZE_UID):$(CUSTOMIZE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
+run-cust: PORT ?= 8888
+run-cust: ## start published version with jupyter lab interface
+	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(CUSTOMIZE_NAME) $(ARGS)
