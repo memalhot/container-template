@@ -43,9 +43,9 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN conda install --quiet --yes conda=23.3.1 python=3.9.16 --no-pin --force-reinstall && \ 
-    conda install --quiet --yes ${PYTHON_PREREQ_VERSIONS} && \
-    conda install --quiet --yes ${PYTHON_INSTALL_PACKAGES} && \
+RUN mamba install --yes python=3.11.6 --no-pin --force-reinstall && \ 
+    mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
+    mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
     pip install jupyterlab-rise==0.2.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
@@ -75,14 +75,14 @@ RUN touch /home/${NB_USER}/.hushlogin && \
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
 # FIXME: Add support for swinging home directory if you want to point to a mounted volume
-ARG CUSTOMIZE_UID
-ENV NB_UID=${CUSTOMIZE_UID}
+ARG OPE_UID
+ENV NB_UID=${OPE_UID}
 
-ARG CUSTOMIZE_GID
-ENV NB_GID=${CUSTOMIZE_GID}
+ARG OPE_GID
+ENV NB_GID=${OPE_GID}
 
-ARG CUSTOMIZE_GROUP
-ENV NB_GROUP=${CUSTOMIZE_GROUP}
+ARG OPE_GROUP
+ENV NB_GROUP=${OPE_GROUP}
 
 ARG EXTRA_CHOWN
 ARG CHOWN_HOME=yes
@@ -108,8 +108,9 @@ COPY start-notebook.d /usr/local/bin/start-notebook.d
 ENV USER=$NB_USER
 
 # Change the ownership of the home directory to ope group so it starts up properly
+
 RUN chgrp ${OPE_GROUP} -R /home
 
 USER $NB_USER
-CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]
 
+CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]

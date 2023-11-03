@@ -6,14 +6,15 @@
 SHELL := /bin/bash
 CUST := $(shell if  [[ -a base/customization_name ]]; then cat base/customization_name;  fi)
 
-# User must specify customization suffix
-ifndef CUST
-$(error CUST is not set.  You must specify which customized version of the image you want to work with. Eg. make CUST=opf build)
-endif
 
+# Name of the repository
 OPE_CONTAINER_NAME := $(shell cat base/ope_container_name)
 
+# The name of the repository, same name as book
+# TODO: Change OPE_BOOK to OPE_CONTAINER_NAME
 OPE_BOOK := $(shell cat base/ope_book)
+
+
 # USER id
 OPE_UID := $(shell cat base/ope_uid)
 # GROUP id
@@ -25,11 +26,19 @@ OPE_GROUP := $(shell cat base/ope_group)
 BASE_REG := $(shell cat base/base_registry)/
 BASE_IMAGE := $(shell cat base/base_image)
 BASE_TAG := $(shell cat base/base_tag)
+
 DATE_TAG := $(shell date +"%m.%d.%y_%H.%M.%S")
 
+# TODO: Clean this up to be less confusing, ope book image is kind of confusing as is
+# should make it more clear this is the link to the users image repository
+
+# User can be an organization, 
 OPE_BOOK_USER := $(shell if  [[ -a base/ope_book_user ]]; then cat base/ope_book_user; else echo ${USER}; fi)
 OPE_BOOK_REG := $(shell cat base/ope_book_registry)/
+
+# Name of repo, same name as the book, maybe make one variable?
 OPE_BOOK_IMAGE := $(OPE_BOOK_USER)/$(OPE_BOOK)
+
 OPE_BETA_TAG := :beta-$(CUST)
 OPE_PUBLIC_TAG := :$(CUST)
 
@@ -38,12 +47,12 @@ PYTHON_PREREQ_VERSIONS := $(shell cat base/python_prereqs)
 PYTHON_INSTALL_PACKAGES := $(shell cat base/python_pkgs)
 PIP_INSTALL_PACKAGES := $(shell cat base/pip_pkgs)
 
+# Why if for second and not first?
 JUPYTER_ENABLE_EXTENSIONS := $(shell cat base/jupyter_enable_exts)
 JUPYTER_DISABLE_EXTENSIONS := $(shell if  [[ -a base/jupyter_disable_exts  ]]; then cat base/jupyter_disable_exts; fi) 
 
 
 # Set customization 
-
 CUSTOMIZE_FROM := $(shell if  [[ -a base/customize_from ]]; then cat base/customize_from; else echo ${OPE_BOOK_REG}${OPE_BOOK_IMAGE}; fi)
 
 # <reg>/<ope_project>:<ope_container>-<stable|test>-<customization>-<latest|date>
@@ -55,8 +64,7 @@ CUSTOMIZE_UID := $(shell cat base/customize_uid)
 CUSTOMIZE_GID := $(shell cat base/customize_gid)
 CUSTOMIZE_GROUP := $(shell cat base/customize_group)
 
-# Common docker run configuration designed to mirror as closely as possible the openshift experience
-# of port mapping for SSH access
+# TODO: Remove
 SSH_PORT := 2222
 
 # we mount here to match openshift
@@ -69,7 +77,6 @@ EXTRA_CHOWN := $(shell if  [[ -a base/extra_chown  ]]; then cat base/extra_chown
 help:
 # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
 
 build: DARGS ?= --build-arg FROM_REG=$(BASE_REG) \
                    --build-arg FROM_IMAGE=$(BASE_IMAGE) \
@@ -102,11 +109,9 @@ push: ## push private build
 # push to update tip to current version
 	docker push $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG)
 
-
 pull-beta: DARGS ?=
 pull-beta: ## pull most recent private version
 	docker pull $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG)
-
 
 publish: pull-beta
 publish: DARGS ?=
@@ -119,7 +124,6 @@ publish: ## publish current private build to public published version
 	docker tag $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG) $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_PUBLIC_TAG)
 # push to update tip to current version
 	docker push $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_PUBLIC_TAG)
-
 
 checksum: ARGS ?= find / -not \( -path /proc -prune \) -not \( -path /sys -prune \) -type f -exec stat -c '%n %a' {} + | LC_ALL=C sort | sha256sum | cut -c 1-64
 checksum: DARGS ?= -u 0
@@ -139,7 +143,6 @@ show-tag: ## tag current private build as beta
   
 
 ### DEBUG TARGETS
-
 root: ARGS ?= /bin/bash
 root: DARGS ?= -u 0
 root: ## start private version  with root shell to do admin and poke around
@@ -156,6 +159,7 @@ pull:
 pull: ## pull most recent public version
 	docker pull $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_PUBLIC_TAG)
 
+# TODO: Cut out SSH port
 run: pull
 run: ARGS ?=
 run: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
