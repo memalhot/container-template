@@ -10,11 +10,6 @@ CUST := $(shell if  [[ -a base/customization_name ]]; then cat base/customizatio
 # Name of the repository
 OPE_CONTAINER_NAME := $(shell cat base/ope_container_name)
 
-# The name of the repository, same name as book
-# TODO: Change OPE_BOOK to OPE_CONTAINER_NAME
-OPE_BOOK := $(shell cat base/ope_book)
-
-
 # USER id
 OPE_UID := $(shell cat base/ope_uid)
 # GROUP id
@@ -29,15 +24,12 @@ BASE_TAG := $(shell cat base/base_tag)
 
 DATE_TAG := $(shell date +"%m.%d.%y_%H.%M.%S")
 
-# TODO: Clean this up to be less confusing, ope book image is kind of confusing as is
-# should make it more clear this is the link to the users image repository
 
 # User can be an organization, 
 OPE_BOOK_USER := $(shell if  [[ -a base/ope_book_user ]]; then cat base/ope_book_user; else echo ${USER}; fi)
 OPE_BOOK_REG := $(shell cat base/ope_book_registry)/
 
-# Name of repo, same name as the book, maybe make one variable?
-OPE_BOOK_IMAGE := $(OPE_BOOK_USER)/$(OPE_BOOK)
+OPE_BOOK_IMAGE := $(OPE_BOOK_USER)/$(OPE_CONTAINER_NAME)
 
 OPE_BETA_TAG := :beta-$(CUST)
 OPE_PUBLIC_TAG := :$(CUST)
@@ -64,8 +56,6 @@ CUSTOMIZE_UID := $(shell cat base/customize_uid)
 CUSTOMIZE_GID := $(shell cat base/customize_gid)
 CUSTOMIZE_GROUP := $(shell cat base/customize_group)
 
-# TODO: Remove
-SSH_PORT := 2222
 
 # we mount here to match openshift
 MOUNT_DIR := $(shell cat base/mount_dir)
@@ -91,7 +81,7 @@ build: DARGS ?= --build-arg FROM_REG=$(BASE_REG) \
 				   --build-arg EXTRA_CHOWN="$(EXTRA_CHOWN)"
 build: ## Make the image customized appropriately
 	docker build $(DARGS) $(DCACHING) -t $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_BETA_TAG) --file base/Build.Dockerfile base
-
+	
 customize: DARGS ?= --build-arg FROM_IMAGE=$(CUSTOMIZE_FROM) \
                    --build-arg CUSTOMIZE_UID=$(CUSTOMIZE_UID) \
                    --build-arg CUSTOMIZE_GID=$(CUSTOMIZE_GID) \
@@ -162,13 +152,13 @@ pull: ## pull most recent public version
 # TODO: Cut out SSH port
 run: pull
 run: ARGS ?=
-run: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
+run: DARGS ?= -u $(OPE_UID):$(OPE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
 run: PORT ?= 8888
 run: ## start published version with jupyter lab interface
 	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(OPE_BOOK_REG)$(OPE_BOOK_IMAGE)$(OPE_PUBLIC_TAG) $(ARGS) 
 
 run-cust: ARGS ?=
-run-cust: DARGS ?= -u $(CUSTOMIZE_UID):$(CUSTOMIZE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} -p ${SSH_PORT}:22
+run-cust: DARGS ?= -u $(CUSTOMIZE_UID):$(CUSTOMIZE_GID) -v "${HOST_DIR}":"${MOUNT_DIR}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -v "${SSH_AUTH_SOCK}":"${SSH_AUTH_SOCK}" -e SSH_AUTH_SOCK=${SSH_AUTH_SOCK} 
 run-cust: PORT ?= 8888
 run-cust: ## start published version with jupyter lab interface
 	docker run -it --rm -p $(PORT):$(PORT) $(DARGS) $(CUSTOMIZE_NAME) $(ARGS)

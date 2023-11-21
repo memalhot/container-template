@@ -17,6 +17,9 @@ ARG ADDITIONAL_DISTRO_PACKAGES
 ARG PYTHON_PREREQ_VERSIONS
 ARG PYTHON_INSTALL_PACKAGES
 
+ARG JUPYTER_ENABLE_EXTENSIONS
+ARG JUPYTER_DISABLE_EXTENSIONS
+
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -51,10 +54,23 @@ RUN mamba install --yes python=3.11.6 --no-pin --force-reinstall && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
 
-USER ${NB_UID}
-
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
+
+# enable extensions
+RUN for ext in ${JUPYTER_ENABLE_EXTENSIONS} ; do \
+   jupyter nbextension enable "$ext" ; \
+   done && \
+   fix-permissions "${CONDA_DIR}" && \
+   fix-permissions "/home/${NB_USER}"
+
+# disable extensions -- disabling core extensions can be really useful for customizing
+#                       jupyterlab user experience
+RUN for ext in ${JUPYTER_DISABLE_EXTENSIONS} ; do \
+   jupyter labextension disable "$ext" ; \
+   done && \
+   fix-permissions "${CONDA_DIR}" && \
+   fix-permissions "/home/${NB_USER}"
 
 # copy overrides.json
 COPY settings ${CONDA_DIR}/share/jupyter/lab/settings
