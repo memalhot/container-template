@@ -46,10 +46,10 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN mamba install --yes python=3.11.6 --no-pin --force-reinstall && \ 
+RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \ 
     mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
     mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
-    pip install jupyterlab-rise==0.2.0 && \
+    mamba install --yes jupyterlab_rise==0.2.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
