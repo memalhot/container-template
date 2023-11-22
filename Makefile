@@ -88,7 +88,8 @@ customize: DARGS ?= --build-arg FROM_IMAGE=$(CUSTOMIZE_FROM) \
                    --build-arg CUSTOMIZE_GROUP=$(CUSTOMIZE_GROUP) \
 		           --build-arg EXTRA_CHOWN="$(EXTRA_CHOWN)"
 customize:  ## build a customized deployment image
-	docker build $(DARGS) $(DCACHING) --rm --force-rm -t $(CUSTOMIZE_NAME) --file base/Customize.Dockerfile base
+	docker build $(DARGS) $(DCACHING) --rm --force-rm -t $(CUSTOMIZE_NAME) --file base/Customize.Dockerfile base 
+	docker-squash -t $(CUSTOMIZE_NAME) $(CUSTOMIZE_NAME)
 
 push: DARGS ?=
 push: ## push private build
