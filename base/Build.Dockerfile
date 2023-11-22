@@ -17,6 +17,9 @@ ARG ADDITIONAL_DISTRO_PACKAGES
 ARG PYTHON_PREREQ_VERSIONS
 ARG PYTHON_INSTALL_PACKAGES
 
+ARG JUPYTER_ENABLE_EXTENSIONS
+ARG JUPYTER_DISABLE_EXTENSIONS
+
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -43,18 +46,31 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN conda install --quiet --yes conda=23.3.1 python=3.9.16 --no-pin --force-reinstall && \ 
-    conda install --quiet --yes ${PYTHON_PREREQ_VERSIONS} && \
-    conda install --quiet --yes ${PYTHON_INSTALL_PACKAGES} && \
+RUN mamba install --yes python=3.11.6 --no-pin --force-reinstall && \ 
+    mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
+    mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
     pip install jupyterlab-rise==0.2.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
 
-USER ${NB_UID}
-
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
+
+# enable extensions
+RUN for ext in ${JUPYTER_ENABLE_EXTENSIONS} ; do \
+   jupyter nbextension enable "$ext" ; \
+   done && \
+   fix-permissions "${CONDA_DIR}" && \
+   fix-permissions "/home/${NB_USER}"
+
+# disable extensions -- disabling core extensions can be really useful for customizing
+#                       jupyterlab user experience
+RUN for ext in ${JUPYTER_DISABLE_EXTENSIONS} ; do \
+   jupyter labextension disable "$ext" ; \
+   done && \
+   fix-permissions "${CONDA_DIR}" && \
+   fix-permissions "/home/${NB_USER}"
 
 # copy overrides.json
 COPY settings ${CONDA_DIR}/share/jupyter/lab/settings
@@ -75,29 +91,27 @@ RUN touch /home/${NB_USER}/.hushlogin && \
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
 # FIXME: Add support for swinging home directory if you want to point to a mounted volume
-ARG DEFAULT_NB_UID=${NB_UID}
 ARG OPE_UID
+ENV NB_UID=${OPE_UID}
+
 ARG OPE_GID
+ENV NB_GID=${OPE_GID}
+
 ARG OPE_GROUP
+ENV NB_GROUP=${OPE_GROUP}
+
+ARG EXTRA_CHOWN
 ARG CHOWN_HOME=yes
 ARG CHOWN_HOME_OPTS="-R"
 ARG CHOWN_EXTRA_OPTS='-R'
-ARG CHOWN_EXTRA="${CONDA_DIR}"
-ENV OPE_UID=${OPE_UID}
-ENV NB_UID=${OPE_UID}
-ENV OPE_GID=${OPE_GID}
-ARG NB_GID=${OPE_GID}
-ENV NB_GID=${NB_GID}
-ENV OPE_GROUP=${OPE_GROUP}
-ARG NB_GROUP=${OPE_GROUP}
-ENV NB_GROUP=${NB_GROUP}
+ARG CHOWN_EXTRA="${EXTRA_CHOWN} ${CONDA_DIR}"
 
 # Done customization
 
 # jupyter-stack contains logic to run custom start hook scripts from
 # two locations -- /usr/local/bin/start-notebook.d and
 #                 /usr/local/bin/before-notebook.d
-# and scripts in these directoreis are run automatically
+# and scripts in these directories are run automatically
 # an opportunity to set things up based on dynamic facts such as user name
 
 RUN /usr/local/bin/start.sh true; \
@@ -110,8 +124,9 @@ COPY start-notebook.d /usr/local/bin/start-notebook.d
 ENV USER=$NB_USER
 
 # Change the ownership of the home directory to ope group so it starts up properly
+
 RUN chgrp ${OPE_GROUP} -R /home
 
 USER $NB_USER
-CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]
 
+CMD  ["/bin/bash", "-c", "cd /home/jovyan ; start-notebook.sh"]
