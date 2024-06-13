@@ -54,6 +54,12 @@ RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
 
+
+#add tools repo and add ope to the path
+RUN git clone https://github.com/OPEFFORT/tools.git && \
+cd tools && \
+./install.sh
+
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
