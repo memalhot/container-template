@@ -46,13 +46,18 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN mamba install --yes python=3.11.6 --no-pin --force-reinstall && \ 
+RUN mamba install --yes python=3.11.9 --no-pin --force-reinstall && \ 
     mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
     mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
-    pip install jupyterlab-rise==0.2.0 && \
+    mamba install --yes jupyterlab_rise==0.42.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
+
+#MAYBE CHANGE TO SSH
+RUN git clone https://github.com/OPEFFORT/tools.git && \
+    cd tools && \
+    ./install.sh
 
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
