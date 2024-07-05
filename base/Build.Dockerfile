@@ -46,7 +46,7 @@ USER ${NB_UID}
 # packages. Install Python 3 packages
 #RUN python --version
 
-RUN mamba install --yes python=3.11.9 --no-pin --force-reinstall && \ 
+RUN mamba install --yes python=3.9.13 --no-pin --force-reinstall && \ 
     mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
     mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
     mamba install --yes jupyterlab_rise==0.42.0 && \
