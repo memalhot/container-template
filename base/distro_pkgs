@@ -39,4 +39,6 @@ lsb-release
 xdg-utils
 wget
 dos2unix
-
+gcc-11
+g++-11
+build-essential
