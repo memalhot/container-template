@@ -59,7 +59,10 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 RUN mkdir instructlab && \
     cd instructlab && \
     pip cache remove llama_cpp_python && \
-    pip install instructlab
+    pip install instructlab && \
+    _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
+    echo ". ~/.ilab-complete.bash" >> ~/.bashrc && \
+    cd
 
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"

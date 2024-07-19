@@ -18,5 +18,5 @@ jupyterlab-myst==2.4.2
 numpy==1.26.4
 nbgitpuller
 jupyterlab-git
-nbformat
+nbformat>=5.7
 cxx-compiler
