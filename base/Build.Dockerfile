@@ -54,7 +54,9 @@ RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
 
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu 
+
+RUN pip install jupyter-events
 
 RUN mkdir instructlab && \
     cd instructlab && \
