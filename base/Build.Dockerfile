@@ -58,14 +58,8 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 
 RUN pip install jupyter-events
 
-RUN mkdir instructlab && \
-    cd instructlab && \
-    pip cache remove llama_cpp_python && \
-    pip install instructlab && \
-    _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
-    echo ". ~/.ilab-complete.bash" >> ~/.bashrc && \
-    cd
 
+USER ${NB_UID}
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
@@ -100,6 +94,16 @@ RUN touch /home/${NB_USER}/.hushlogin && \
     # as per the nbstripout readme we setup nbstripout be always be used for the joyvan user for all repos
     nbstripout --install --system 
 
+RUN mkdir /home/instructlab && \
+    cd /home/instructlab && \
+    python3 -m venv --upgrade-deps venv && \
+    source venv/bin/activate && \
+    git clone https://github.com/instructlab/taxonomy.git && \
+    pip install instructlab && \
+    _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
+    echo ". ~/.ilab-complete.bash" >> ~/.bashrc && \
+    cd
+    
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
 # FIXME: Add support for swinging home directory if you want to point to a mounted volume
