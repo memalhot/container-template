@@ -96,6 +96,7 @@ RUN touch /home/${NB_USER}/.hushlogin && \
 
 RUN mkdir /home/instructlab && \
     cd /home/instructlab && \
+    chown jovyan /home/instructlab && \
     python3 -m venv --upgrade-deps venv && \
     source venv/bin/activate && \
     git clone https://github.com/instructlab/taxonomy.git && \
