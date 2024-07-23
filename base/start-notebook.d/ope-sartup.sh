@@ -84,7 +84,7 @@ if [[ -d $MOUNT_DIR ]]; then
       if [[ ! -d home/ope/$ILAB ]]; then
 	    if [[ ! -d $MOUNT_DIR/$ILAB ]]; then
           echo "$SN: creating $MOUNT_DIR/$ILAB"
-	      mkdir $MOUNT_DIR/$ILAB;
+	      mkdir $MOUNT_DIR/$ILAB
         fi
 	    echo "$SN: Linking $MOUNT_DIR/$ILAB -> /home/instructlab/$ILAB"
     	ln -s $MOUNT_DIR/$ILAB /home/instructlab/$ILAB
