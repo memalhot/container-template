@@ -56,7 +56,6 @@ RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \
 
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu 
 
-RUN pip install jupyter-events
 RUN pip install instructlab
 
 USER ${NB_UID}
@@ -98,8 +97,7 @@ RUN mkdir /home/instructlab && \
     cd /home/instructlab && \
     chown jovyan /home/instructlab && \
     _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
-    echo ". ~/.ilab-complete.bash" >> ~/.bashrc && \
-    cd
+    echo ". ~/.ilab-complete.bash" >> ~/.bashrc
     
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
