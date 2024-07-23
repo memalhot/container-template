@@ -74,7 +74,7 @@ if [[ -d $MOUNT_DIR ]]; then
       if [[ ! -d home/ope/$OPE ]]; then
 	    if [[ ! -d $MOUNT_DIR/$OPE ]]; then
           echo "$SN: creating $MOUNT_DIR/$OPE"
-	      mkdir $MOUNT_DIR/$OPE;
+	      mkdir $MOUNT_DIR/$OPE
         fi
 	    echo "$SN: Linking $MOUNT_DIR/$OPE -> /home/ope/$OPE"
     	ln -s $MOUNT_DIR/$OPE /home/ope/$OPE
