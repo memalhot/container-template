@@ -99,10 +99,11 @@ RUN mkdir /home/ope && \
     ./install.sh && \
     chown jovyan /home/ope && \
     fix-permissions /home/ope
-    
+
 RUN mkdir /home/instructlab && \
     cd /home/instructlab && \
     chown jovyan /home/instructlab && \
+    chmod -R 777 /home/instructlab && \
     _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
     echo ". ~/.ilab-complete.bash" >> ~/.bashrc
     
