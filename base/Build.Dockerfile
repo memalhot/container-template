@@ -49,11 +49,11 @@ USER ${NB_UID}
 RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \ 
     mamba install --yes ${PYTHON_PREREQ_VERSIONS} && \
     mamba install --yes ${PYTHON_INSTALL_PACKAGES} && \
-    mamba install --yes jupyterlab_rise==0.2.0 && \
+    mamba install --yes jupyterlab_rise==0.42.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
-
+    
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
@@ -77,6 +77,13 @@ COPY settings ${CONDA_DIR}/share/jupyter/lab/settings
 
 USER root
 
+RUN mkdir /home/ope && \
+    cd /home/ope && \
+    git clone https://github.com/OPEFFORT/tools.git . && \
+    ./install.sh && \
+    chown jovyan /home/ope && \
+    fix-permissions /home/ope
+    
 # final bits of cleanup
 RUN touch /home/${NB_USER}/.hushlogin && \
 # use a short prompt to improve default behaviour in presentations
