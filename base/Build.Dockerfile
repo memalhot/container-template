@@ -93,6 +93,13 @@ RUN touch /home/${NB_USER}/.hushlogin && \
     # as per the nbstripout readme we setup nbstripout be always be used for the joyvan user for all repos
     nbstripout --install --system 
 
+RUN mkdir /home/ope && \
+    cd /home/ope && \
+    git clone https://github.com/OPEFFORT/tools.git . && \
+    ./install.sh && \
+    chown jovyan /home/ope && \
+    fix-permissions /home/ope
+    
 RUN mkdir /home/instructlab && \
     cd /home/instructlab && \
     chown jovyan /home/instructlab && \
