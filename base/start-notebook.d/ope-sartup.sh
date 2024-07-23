@@ -69,6 +69,7 @@ if [[ -d $MOUNT_DIR ]]; then
 	  . $MOUNT_DIR/.myjupyter_start.sh
       fi
 	  
+	  #add workspaces to save user work
       OPE=ope_work
       if [[ ! -d home/ope/$OPE ]]; then
 	    if [[ ! -d $MOUNT_DIR/$OPE ]]; then
