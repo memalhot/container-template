@@ -54,8 +54,9 @@ RUN mamba install --yes python=3.9.13  --no-pin --force-reinstall && \
     fix-permissions "/home/${NB_USER}" && \
     mamba clean -afy
 
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu && \
-    pip install instructlab
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu 
+
+RUN pip install instructlab
 
 USER ${NB_UID}
 # Import matplotlib the first time to build the font cache.
@@ -92,15 +93,14 @@ RUN touch /home/${NB_USER}/.hushlogin && \
     # as per the nbstripout readme we setup nbstripout be always be used for the joyvan user for all repos
     nbstripout --install --system 
 
-#make workspaces mounted to memory so teachers can create content w ilab + ope tool
 RUN mkdir /home/ope && \
     cd /home/ope && \
     git clone https://github.com/OPEFFORT/tools.git . && \
     ./install.sh && \
     chown jovyan /home/ope && \
-    fix-permissions /home/ope && \
-    #now for instructlab
-    mkdir /home/instructlab && \
+    fix-permissions /home/ope
+
+RUN mkdir /home/instructlab && \
     cd /home/instructlab && \
     chown jovyan /home/instructlab && \
     chmod -R 777 /home/instructlab && \
