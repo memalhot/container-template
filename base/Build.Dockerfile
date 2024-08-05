@@ -106,6 +106,7 @@ RUN mkdir /home/instructlab && \
     chmod -R 777 /home/instructlab && \
     _ILAB_COMPLETE=bash_source ilab > ~/.ilab-complete.bash && \
     echo ". ~/.ilab-complete.bash" >> ~/.bashrc
+
     
 # Static Customize for OPE USER ID choices
 # To avoid problems with start.sh logic we do not modify user name
